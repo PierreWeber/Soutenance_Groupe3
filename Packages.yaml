@@ -1,0 +1,66 @@
+---
+- name: Installation des paquets
+    hosts: all
+    become: yes
+    vars:
+      #user: Chris
+      packages: ['nano','ntpdate','nginx','unzip','tree','curl','wget' ]
+      #files: ['app.js', 'package.json']
+      #dest: /home/osboxes
+      #app_dir: nodeapp
+
+    #vars_files:
+      #- vars/logos.yaml
+
+    tasks:
+
+    - name: Install package
+      package:
+         name: "{{ item }}"
+         state: latest
+      loop: "{{ packages }}"
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: started
+
+    - name: Check HTTP Service
+      uri:
+        url: http://{{ ansible_default_ipv4.address }}
+        status_code: 200
+      register: verification
+
+    - debug: var=verification
+...
+
+   # - name: Install EPEL
+   #    apt:
+   #      name: epel-release
+   #      update_cache: yes
+   #    state: latest
+   #    #when: ansible_distribution == 'CentOS'
+   #    tags:
+   #      - install-epel
+
+
+   # - name: démarrage de l'application nodejs
+   #   shell:
+   #     chdir: nodeapp
+   #     cmd: nohup node app.js &     # détachement du processus node vis à vis de son parent pour eviter d'etre bloque
+
+    # - name: Template index.html-easter_egg.j2 to index.html on target
+    #   template:
+    #     src: index.html-easter_egg.j2
+    #     dest: "{{ nginx_root_location }}/index.html"
+    #     mode: 0644
+    #     tags:
+    #     - deploy-app
+    #
+    # - name: Unarchive playbook stacker game
+    #   unarchive:
+    #     src: playbook_stacker.zip
+    #     dest: "{{ nginx_root_location }}"
+    #     mode: 0755
+    #   tags:
+    #     - deploy-app

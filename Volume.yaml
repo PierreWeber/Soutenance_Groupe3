@@ -1,0 +1,61 @@
+---
+  - name: test01
+    hosts: aws
+    become: yes
+
+    vars:
+      members: ['Damtoti','Nathe','Damien','Pierre']
+
+    tasks:
+
+    - name: Creer un repertoire Travail
+      file:
+        path: /home/{{ item }}/travaille/
+        mode: '755'
+        state: directory
+      loop: "{{ members }}"
+
+
+    - name: Creer un repertoire pour Git
+      file:
+        path: /home/{{ item }}/git/
+        mode: '755'
+        state: directory
+      loop: "{{ members }}"
+
+    - name: Creer un repertoire pour URL
+      file:
+        path: /home/{{ item }}/URL/
+        mode: '755'
+        state: directory
+      loop: "{{ members }}"
+
+    - name: copy
+      copy:
+        remote_src: yes
+        src: /home/{{ item }}/travaille/
+        dest: /var/www/html
+        mode: 0755
+        owner: "{{ item }}"
+      loop: "{{ members }}"
+
+...
+
+  #notify: file_change
+
+  # handlers:                                       # si changement fait dans la tache declenche une action
+  # - name: file_change
+  #   docker.built:
+
+
+# autre syntaxe possible:
+  # after: 'Ton père est '
+  # regexp: '^(.+)$'
+  # replace: "{{ inventory_hostname }}"
+# - name: modifie fichier secret.txt
+#   replace:
+#     path: /home/osboxes/private/secret.txt
+#     regexp: '\[father\]'
+#     replace: "{{ inventory_hostname }}"
+#   when: inventory_hostname == 'slave1'
+...

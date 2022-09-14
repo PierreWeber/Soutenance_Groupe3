@@ -1,0 +1,14 @@
+---
+  - name: Projet CD
+    hosts: aws
+    become: yes
+
+    roles:
+    - ping
+    - users
+    - packages
+    - docker
+
+
+
+...

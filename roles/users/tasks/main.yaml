@@ -1,0 +1,26 @@
+---
+- name: Creer un repertoire Travail
+  file:
+    path: /home/{{ item }}/travaille/
+    mode: '755'
+    state: directory
+  loop: "{{ members }}"
+
+
+- name: Creer un repertoire pour Python
+  file:
+    path: /home/{{ item }}/Python/
+    mode: '755'
+    state: directory
+  loop: "{{ members }}"
+
+#- name: copy
+#  copy:
+#    remote_src: yes
+#    src: /home/{{ item }}/travaille/
+#    dest: /var/www/html
+#    mode: 0755
+#    owner: "{{ item }}"
+#  loop: "{{ members }}"
+
+...

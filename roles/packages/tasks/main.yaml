@@ -1,0 +1,21 @@
+---
+- name: Install package
+  apt:
+     name: "{{ item }}"
+     state: latest
+     update_cache: yes
+  loop: "{{ packages }}"
+
+- name: start docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Create a volume
+  docker_volume:
+    name: data
+    state: present
+
+...
+

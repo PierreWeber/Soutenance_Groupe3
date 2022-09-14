@@ -1,0 +1,35 @@
+---
+- name: télécharge image docker {{ docker_repo }}
+  docker_image:
+    name: "{{ docker_repo }}"
+    source: pull
+    force_source: yes
+
+- name: démarre container
+  docker_container:
+    image: "{{ docker_repo }}"
+    name: Python
+    state: started
+    interactive : yes
+    volumes:
+      - /home/Pierre/Python:/tmp
+
+- name: envoie requête sur serveur conteneurisé
+    uri:
+      url: http://localhost:8080
+      return_content: yes
+    register: req_out
+
+- debug:
+    msg: "Status code: {{ req_out.status }} --- Content: {{ req_out.content }}"
+
+- name: Run a simple command (command)
+  docker_container_exec:
+    container: Python
+    command: /bin/bash -c "ls -lah"
+    chdir: /tmp
+  register: result
+
+- debug: var=result
+
+...

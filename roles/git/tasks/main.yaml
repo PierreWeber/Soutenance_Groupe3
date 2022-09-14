@@ -1,0 +1,20 @@
+- name: git clone du code source
+  git:
+    repo: "{{ git_var }}"
+     dest: /home/{{ item }}/git/
+  loop: "{{ members }}"
+
+- name: télécharge ressource
+  get_url:
+    url: "{{ item }}"
+    dest: /home/Pierre/URL/
+    mode: 544
+  loop: "{{ urls }}"
+
+- name: requête sur {{ endpoint }}
+  uri:
+    url: "{{ endpoint }}"
+    method: GET
+
+
+

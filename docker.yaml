@@ -1,0 +1,41 @@
+---
+- name: docker
+  hosts: aws
+  become: yes
+  vars:
+    docker_package: docker.io
+    demo_var: toto
+    img: hello-world
+    docker_repo: opusidea/squad-projet
+
+  tasks:
+
+
+  # - name: démarre conteneur basé sur {{ img }}
+  #   docker_container:
+  #     name: hello {{ item }}
+  #     image: "{{ img }}"
+  #     detach: False
+  #     cleanup: yes
+  #   with_sequence: count=4
+  #   register: container_out
+
+
+  - name: démarre container
+    docker_container:
+      image: "{{ docker_repo }}"
+      name: squad-projet
+      state: started
+      published_ports:
+      - 3000:3000
+      volumes:
+        - /home/Pierre/docker:/tmp
+
+  - name: envoie requête sur serveur conteneurisé
+    uri:
+      url: http://localhost:8080
+      return_content: yes
+    register: req_out
+
+  - debug:
+      msg: "Status code: {{ req_out.status }} --- Content: {{ req_out.content }}"

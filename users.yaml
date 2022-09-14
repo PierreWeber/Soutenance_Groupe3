@@ -1,0 +1,58 @@
+---
+
+- name: test
+  hosts: aws
+  become: yes
+  vars:
+    group: devops
+    members:
+    - { name: Damtoti, group: devops,sudo }
+    - { name: Nathe, group: devops,sudo }
+    - { name: Damien, group: devops,sudo }
+    - { name: Pierre, group: devops,sudo }
+
+  tasks:
+
+  - name: crée le group {{ group }}
+    group:
+      state: present
+      name: "{{ group }}"
+
+  - name: creation d'un utilisateur
+    user:
+      name: "{{ item.name }}"
+      password: "{{'Password01' | password_hash('sha512') }}"
+      home: /home/{{ item.name }}
+      groups: "{{ group }}, sudo"
+      shell: /bin/bash
+      append: yes
+      generate_ssh_key: yes
+      ssh_key_comment: "{{ item.name }}"
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+    loop: "{{ members }}"
+
+  - name: copier fichier vers authorized_keys
+    authorized_key:
+      user: "{{ item.name }}"
+      key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+      state: present
+    loop: "{{ members }}"
+
+  #- name: Update config SSH
+  #  template:
+  #    src: templates/sshd_config.j2
+  #    dest: /etc/ssh/sshd_config
+  #    owner: root
+  #    group: root
+  #    mode: '0644'
+  #    validate: /usr/sbin/sshd -t -f %s
+  #    notify: redémarre sshd
+
+  #handlers:
+  #- name: redémarre sshd
+  #  service: state=restarted name=sshd
+
+...
+
+#"{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"

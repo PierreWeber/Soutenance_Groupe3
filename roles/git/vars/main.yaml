@@ -1,0 +1,8 @@
+---
+git_var: https://github.com/Frimouss/it_vunerability.git
+urls:
+- https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Ansible_logo.svg/1664px-Ansible_logo.svg.png
+- https://raw.githubusercontent.com/cdufour/devops-squad/main/exos.txt
+endpoint: https://jsonplaceholder.typicode.com/posts
+members: ['Damtoti','Nathe','Damien','Pierre']
+...

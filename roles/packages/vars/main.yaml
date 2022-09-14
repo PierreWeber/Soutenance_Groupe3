@@ -1,0 +1,5 @@
+---
+
+packages: ['nano','python3-docker','docker.io','curl','wget']
+
+...
